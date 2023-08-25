@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <regex>
-
+#include "./maze_solver.cpp"
 
 using namespace std;
 
@@ -22,40 +22,6 @@ void delete2DArray(int** array, int rows) {
     delete[] array;
 }
 
-void getPosAndLines(fstream *mazeFileStream, vector<string> *lines, int **pointsPosition)
-{
-    basic_regex pointRecoginationPattern("[a-zA-Z]");
-    int pointIndex = 0;
-    int lineIndex = 0;
-    string tempLine;
-
-     
-    /*
-    Adding string line by string line into "lines" vector pointer. 
-    Simealtaniously, scanning for start and end points of the maze into the vector 
-    pointer's pointer "pointsPosition" 
-    */
-    while (getline(*mazeFileStream, tempLine))
-    {
-        lines->push_back(tempLine);
-        
-        if(regex_search(tempLine, pointRecoginationPattern))
-        {
-            for(int index = 0; index < tempLine.length() && pointIndex < 2; index++)
-            {
-                if(regex_search(string(1, tempLine[index]), pointRecoginationPattern))
-                {
-                    pointsPosition[pointIndex][0] = lineIndex;
-                    pointsPosition[pointIndex][1] = index;
-                    pointIndex++;
-                }
-            }
-        };
-        
-
-        lineIndex++;
-    }
-}
 
 int main(void)
 {   
@@ -71,15 +37,13 @@ int main(void)
     */ 
     int** pointsPosition = create2DArray(2, 2);
 
-    getPosAndLines(mazeFileStream, lines, pointsPosition);
+    MazeSolver ms = MazeSolver(mazeFileStream, lines, pointsPosition);
+    ms.getPosAndLines();
     
+    ms.solveMaze();
 
-
-
-    // cout << (*lines)[pointsPosition[0][0]][pointsPosition[0][1]] << endl;
-    // cout << (*lines)[pointsPosition[1][0]][pointsPosition[1][1]];
-
-
+    
+    
 
 
     // close maze text file.
