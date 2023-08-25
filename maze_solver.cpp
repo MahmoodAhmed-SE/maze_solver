@@ -3,13 +3,20 @@
 #include <string>
 #include <regex>
 
+using namespace std;
+
 class MazeSolver
 {
     private:
+    fstream *mazeFileStream;
+    vector<string> *lines;
+    int **pointsPosition;
 
     public:
-    MazeSolver(fstream *mazeFileStream, vector<string> *lines, int **pointsPosition);
-    
+    MazeSolver() = delete;
+    MazeSolver(fstream *mazeFileStream, vector<string> *lines, int **pointsPosition) 
+        : mazeFileStream(mazeFileStream), lines(lines), pointsPosition(pointsPosition) {};
+        
     void getPosAndLines()
     {
         basic_regex pointRecoginationPattern("[a-zA-Z]");
@@ -90,4 +97,6 @@ class MazeSolver
         
     }
     }
-}
+
+
+};
