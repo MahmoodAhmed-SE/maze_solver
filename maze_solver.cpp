@@ -48,16 +48,20 @@ class MazeSolver
 
     void solveMaze()
     {
-        /*
-    we check each current point's available directions
-    we store the number of the derictions and we deal
-    with them as the number of loops should be done
-    we get to the next position in the next loop and 
-    then we iterate the same strategy that we did
-    if any of the sequance of the loops reache the 
-    end point we break the loops.
+    /*
+    1. we check each current point's available direction
+    and we store the number of the derictions available (empty space) and we deal
+    with the number as the number of loops that should be done until we reach a wall block (#).
+    then we get back to the other direction and so on..
 
-    we start the current position with the start point.
+    2. we move to the next position in the next loop and 
+    then we once again do the same strategy 1 and then 2 and so on.
+
+    3. if any of the sequance of the loops reach the 
+    end point we break the loop.
+
+
+    -- we start our current position from the start point.
     */
 
     basic_regex emptyPathPattern(" ");
