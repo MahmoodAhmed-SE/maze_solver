@@ -40,7 +40,8 @@ int main(void)
     MazeSolver ms = MazeSolver(mazeFileStream, lines, pointsPosition);
     ms.getPosAndLines();
     
-    ms.solveMaze();
+    cout << (*lines)[1] << endl;
+    // ms.solveMaze();
 
     
     
