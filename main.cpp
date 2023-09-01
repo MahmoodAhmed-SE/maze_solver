@@ -38,10 +38,11 @@ int main(void)
     int** pointsPosition = create2DArray(2, 2);
 
     MazeSolver ms = MazeSolver(mazeFileStream, lines, pointsPosition);
-    ms.getPosAndLines();
     
-    cout << (*lines)[1] << endl;
-    // ms.solveMaze();
+    // cout << (*lines)[1] << endl;
+
+    
+    ms.solveMaze();
 
     
     
