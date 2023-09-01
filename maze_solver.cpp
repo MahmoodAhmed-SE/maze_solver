@@ -1,124 +1,68 @@
 #include <fstream>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <regex>
 
 using namespace std;
 
+struct Position {
+    int x;
+    int y;
+};
+
 class MazeSolver
 {
     private:
-    fstream *mazeFileStream;
-    vector<string> *lines;
-    int **pointsPosition;
-    
-
-    /*
-    We store the points [row, column] of (empty space) path that we come into in this vector. 
-    This enables us to track where our position at in the maze.
-    *queue*
-    */ 
-    vector<int[2]> pathPoints;
+    string pathToMazeFile;
+    vector<string> lines;
+    vector<Position> endPoints;
 
     public:
-    MazeSolver() = delete; // deleting default class instructor
-    MazeSolver(fstream *mazeFileStream, vector<string> *lines, int **pointsPosition) 
-        : mazeFileStream(mazeFileStream), lines(lines), pointsPosition(pointsPosition) 
+    MazeSolver() = delete;
+    MazeSolver(string pathToMazeFile) : pathToMazeFile(pathToMazeFile)
+    {
+        fstream mazeFile;
+        mazeFile.open(pathToMazeFile);
+        
+        regex pointPattern("[a-zA-Z]");
+
+
+        int tempLineIndex = 0;
+        string tempLine;
+        while(getline(mazeFile, tempLine))
         {
-            basic_regex pointRecoginationPattern("[a-zA-Z]");
-            int pointIndex = 0;
-            int lineIndex = 0;
-            string tempLine;
-
-            
-            /*
-            Adding string line by string line into "lines" vector pointer. 
-            Simealtaniously, scanning for start and end points of the maze into the vector 
-            pointer's pointer "pointsPosition" 
-            */
-            while (getline(*mazeFileStream, tempLine))
+            lines.push_back(tempLine);
+            if (regex_search(tempLine, pointPattern))
             {
-                lines->push_back(tempLine);
-                
-                if(regex_search(tempLine, pointRecoginationPattern))
+                for(int characterIndex = 0; characterIndex < tempLine.size() && endPoints.size() < 2; characterIndex++)
                 {
-                    for(int index = 0; index < tempLine.length() && pointIndex < 2; index++)
+                    if(regex_search(string(1, tempLine[characterIndex]), pointPattern))
                     {
-                        if(regex_search(string(1, tempLine[index]), pointRecoginationPattern))
-                        {
-                            pointsPosition[pointIndex][0] = lineIndex;
-                            pointsPosition[pointIndex][1] = index;
-                            pointIndex++;
-                        }
+                        Position point;
+                        point.y = characterIndex;
+                        point.x = tempLineIndex;
+                        endPoints.push_back(point); 
                     }
-                };
-                
 
-                lineIndex++;
-            }
-        };
+                    if(endPoints.size() == 2)
+                    {
+                        break;
+                    }
+                }
+            } 
 
+            tempLineIndex++;
+        }
 
-
-    /*
-    1. we check each current point's available direction
-    and we store the number of the derictions available (empty space) and we deal
-    with the number as the number of loops that should be done until we reach a wall block (#).
-    then we get back to the other direction and so on..
+        
+        
+        mazeFile.close();
+    }
     
-    2. we move to the next position in the next loop and 
-    then we once again do the same strategy 1 and then 2 and so on.
-    
-    3. if any of the sequance of the loops reach the 
-    end point we break the loop.
-    
-    we start our current position from the start point.
-    */
-    void solveMaze()
+    void solve()
     {
 
-        basic_regex emptyPathPattern(" ");
-        
-        int currentPosition[2] = {pointsPosition[0][0], pointsPosition[0][1]};
-        
-        int top[2], left[2], bottom[2], right[2]; 
-
-        if (1 < currentPosition[0])
-        {
-            top[0] = currentPosition[0] - 1;
-            top[1] = currentPosition[1];
-        } 
-
-        if (currentPosition[0] < (*lines).size())
-        {
-            bottom[0] = currentPosition[0] + 1;
-            bottom[1] = currentPosition[1];
-        }
-
-        if (1 < currentPosition[1])
-        {
-            left[0] = currentPosition[0];
-            left[1] = currentPosition[1] - 1;
-        }
-
-        if (currentPosition[1] < (*lines).size())
-        {
-            right[0] = currentPosition[0];
-            right[1] = currentPosition[1] + 1;
-        }
-        
-        int *directions[4] = {top, right, bottom, left};
-
-        bool isReached = false;
-        
-        for(int i = 0; i < 4; i++)
-        {
-            cout << *directions[i]<< endl;
-        }
-
-    
     }
-
-
 };
