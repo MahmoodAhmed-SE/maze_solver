@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <regex>
@@ -10,7 +11,7 @@ using namespace std;
 int main(void)
 {   
     MazeSolver exampleSolver = MazeSolver("example.txt");
-    // exampleSolver.solve();
+    exampleSolver.solve();
 
 
     return 0;

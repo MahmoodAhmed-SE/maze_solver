@@ -1,21 +1,7 @@
-#include <fstream>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <regex>
+#include "helpers/index.cpp"
+
 
 using namespace std;
-
-struct Position {
-    int x;
-    int y;
-    bool tried = false;
-    
-    Position(){};
-    Position(int x, int y) : x(x), y(y) {};
-};
-
 
 
 class MazeSolver
@@ -27,11 +13,16 @@ class MazeSolver
 
     public:
     MazeSolver() = delete;
+    /*
+    In the custom class constructor, we take the path to maze text file as (pathToMazeFile) 
+    which is the maze that we want to solve, and get each line as a string in the vector (lines) 
+    while we check for the end points a and b that should be solved and connected by a path 
+    and we store them in the vector (endPoints) 
+    */
     MazeSolver(string pathToMazeFile) : pathToMazeFile(pathToMazeFile)
     {
-        fstream mazeFile;
-        mazeFile.open(pathToMazeFile);
-        
+        fstream mazeFile(pathToMazeFile);
+        // this patter for recognising the endpoints
         regex pointPattern("[a-zA-Z]");
 
 
@@ -61,104 +52,42 @@ class MazeSolver
         }
 
         
-        
         mazeFile.close();
     }
+    
     
     
     /*
     path == queue
     specific direction
-    int loopPositionStartedPlusHowManyAvailab
-
-    for  
-    
-    
+    int loopPositionStartedPlusHowManyAvailab 
     */
-    bool isWall(Position p)
+    vector<Position> queue;
+    void solve()
     {
-        if(lines[p.y][p.x] == '#')
-        {
-            return true;
-        } 
-        else 
-        {
-            return false;
-        }
-    }
-
-    bool isPositionsEqual(Position p1, Position p2)
-    {
-        if (p1.x == p2.x && p1.y == p2.y)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    vector<Position> getDirections(Position pos)
-    {
-        vector<Position> directions;
-
-        Position top = Position(pos.x, pos.y - 1);
-        Position right = Position(pos.x + 1, pos.y);
-        Position bottom = Position(pos.x, pos.y + 1);
-        Position left = Position(pos.x - 1, pos.y);
-        
-        if(!isWall(top))
-        {
-            directions.push_back(top);
-        }
-        if(!isWall(right))
-        {
-            directions.push_back(right);
-        }
-        if(!isWall(bottom))
-        {
-            directions.push_back(bottom);
-        }
-        if(!isWall(left))
-        {
-            directions.push_back(left);
-        }
-        
-        return directions;
-    }
-    
-    Position getLastPosition(vector<Position> path)
-    {
-        return path[path.size() - 1];
-    }
-
-    vector<Position> path = {endPoints[0]};
-    void solve(Position direction = Position(-5, -5))
-    {
-        if (direction.x == -5)
-        {
-            direction = getLastPosition(path);
-        }
+        vector<Position> path = {endPoints[0]};
+        Position position = getLastPosition(path, path.size());
         
         if(path.size() > 1)
         {
-            if (!isPositionsEqual(getLastPosition(path), direction))
+            if (!isPositionsEqual(getLastPosition(path, path.size()), position))
             {
-                path.push_back(direction);
+                path.push_back(position);
             }
         }
-
-        vector<Position> directions = getDirections(direction);
         
-        for(Position direction : directions)
+        vector<Position> directions = getDirections(position, lines);
+        if(directions.size() > 1)
         {
+            queue.push_back(position);
+        }
 
-            if(isPositionsEqual(direction, endPoints[1]))
+        for(int i = 0; i < directions.size(); i++)
+        {
+            if (!directions[i].tried) 
             {
-                cout << "solved";
-                break;
+                // solve(directions[i]);
             }
-
-            solve(direction);
         }
 
     }
